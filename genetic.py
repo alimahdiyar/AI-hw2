@@ -1,5 +1,3 @@
-# run with python 2
-
 import random
 import matplotlib.pyplot as plt
 utility_holder = []
@@ -58,7 +56,7 @@ def genetic_queen(population, utility):
             new_population.append(child)
             if utility(child) == max_utility:
                 break
-    new_population.sort(lambda a,b: 1 if utility(b) - utility(a) > 0 else -1)
+    new_population.sort(key=lambda a: -utility(a))
     return new_population[:population_size]
 
 def print_chromosome(chrom):
@@ -68,10 +66,11 @@ def print_chromosome(chrom):
 population = [random_chromosome() for _ in range(population_size)]
 
 generation = 1
+utility_holder += [(generation,utility(chrom)) for chrom in population]
 while not max_utility in [utility(chrom) for chrom in population]:
-    utility_holder += [(generation,utility(chrom)) for chrom in population]
     population = genetic_queen(population, utility)
     generation += 1
+    utility_holder += [(generation,utility(chrom)) for chrom in population]
 
 for chrom in population:
     if utility(chrom) == max_utility:
@@ -80,11 +79,11 @@ for chrom in population:
         break
 
 _, plot = plt.subplots()
-plot.set_xlabel('x')
-plot.set_ylabel('f(x)')
+plot.set_xlabel('generation')
+plot.set_ylabel('utility')
 for u in utility_holder:
     if u[1] != max_utility:
-        plot.scatter(u[0], max(u[1], 0), s=50, c='green', marker='s')
+        plot.scatter(u[0], max(u[1], 0), s=10, c='green', marker='s')
     else:
         plot.scatter(u[0], u[1], s=50, c='red', marker='s')
 plt.show()
