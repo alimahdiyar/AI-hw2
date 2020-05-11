@@ -47,15 +47,18 @@ def iterative_hill_climbing(f, fp, times):
     x_arr = [random.random() * 2 + 0.5 for _ in range(times)]
     ans = min([hill_climbing(x, f, fp) for x in x_arr])
     draw(x_arr, ans, f)
+ 
+
+def Temperature(x):
+    return (100 / x) * cos(x)
 
 def simulated_annealing(f, fp):
     x = random.random() * 2 + 0.5
     ans = x
     path = [x]
-    Temperature = 1
     for i in range(1, 10000):
-        step = random.choice([-1,1]) * Temperature
-        p = Temperature
+        step = random.choice([-1,1]) * Temperature(i)
+        p = Temperature(i)
         n = ans + step
         if 0.5 <= n <= 2.5:
             if f(n) < f(ans):
@@ -65,7 +68,7 @@ def simulated_annealing(f, fp):
                 if random.random() < p:
                     ans = n
                     path.append(n)
-        Temperature *= 0.95
+    
     draw_sa(x, path, ans, f)
 
 # iterative_hill_climbing(f, fp, 1) #normal hill climbing
